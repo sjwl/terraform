@@ -34,12 +34,12 @@ func TestApply(t *testing.T) {
 
 	p := testProvider()
 	p.GetSchemaReturn = applyFixtureSchema()
-	p.PlanResourceChangeFn = func (req providers.PlanResourceChangeRequest) providers.PlanResourceChangeResponse {
+	p.PlanResourceChangeFn = func(req providers.PlanResourceChangeRequest) providers.PlanResourceChangeResponse {
 		return providers.PlanResourceChangeResponse{
 			PlannedState: req.ProposedNewState,
 		}
 	}
-	p.ApplyResourceChangeFn = func (req providers.ApplyResourceChangeRequest) providers.ApplyResourceChangeResponse {
+	p.ApplyResourceChangeFn = func(req providers.ApplyResourceChangeRequest) providers.ApplyResourceChangeResponse {
 		return providers.ApplyResourceChangeResponse{
 			NewState: req.PlannedState,
 		}
