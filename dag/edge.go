@@ -30,10 +30,17 @@ type basicEdge struct {
 func (e *basicEdge) Hashcode() interface{} {
 
 	rvS := reflect.ValueOf(e.S)
+	if rvS.Kind() == reflect.Ptr {
+		rvS = rvS.Elem()
+	}
+	rvT := reflect.ValueOf(e.T)
+	if rvT.Kind() == reflect.Ptr {
+		rvT = rvT.Elem()
+	}
 	switch rvS.Kind() {
 	case reflect.Struct:
 		hashS, _ := hashstructure.Hash(rvS, nil)
-		hashT, _ := hashstructure.Hash(rvS, nil)
+		hashT, _ := hashstructure.Hash(rvT, nil)
 		return fmt.Sprintf("%x-%x", hashS, hashT)
 	}
 	return fmt.Sprintf("%p-%p", e.S, e.T)
