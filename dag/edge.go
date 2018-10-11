@@ -2,6 +2,9 @@ package dag
 
 import (
 	"fmt"
+	"reflect"
+
+	"github.com/mitchellh/hashstructure"
 )
 
 // Edge represents an edge in the graph, with a source and target vertex.
@@ -25,6 +28,14 @@ type basicEdge struct {
 }
 
 func (e *basicEdge) Hashcode() interface{} {
+
+	rvS := reflect.ValueOf(e.S)
+	switch rvS.Kind() {
+	case reflect.Struct:
+		hashS, _ := hashstructure.Hash(rvS, nil)
+		hashT, _ := hashstructure.Hash(rvS, nil)
+		return fmt.Sprintf("%x-%x", hashS, hashT)
+	}
 	return fmt.Sprintf("%p-%p", e.S, e.T)
 }
 
