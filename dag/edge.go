@@ -27,26 +27,22 @@ type basicEdge struct {
 	S, T Vertex
 }
 
+func hash(rv reflect.Value) (hash uint64) {
+	if rv.Kind() == reflect.Ptr {
+		rv = rv.Elem()
+	}
+	switch rv.Kind() {
+	case reflect.Struct:
+		hash, _ = hashstructure.Hash(rv.Interface(), nil)
+	}
+	return hash
+}
 func (e *basicEdge) Hashcode() interface{} {
 
-	var rvs, rvt reflect.Value
-	rvS := reflect.ValueOf(e.S)
-	if rvS.Kind() == reflect.Ptr {
-		rvs = rvS.Elem()
-	}
-	rvT := reflect.ValueOf(e.T)
-	if rvT.Kind() == reflect.Ptr {
-		rvt = rvT.Elem()
-	}
-	switch rvs.Kind() {
-	case reflect.Struct:
-		s := rvs.Interface()
-		t := rvt.Interface()
-		hashS, _ := hashstructure.Hash(s, nil)
-		hashT, _ := hashstructure.Hash(t, nil)
-		return fmt.Sprintf("%x-%x", hashS, hashT)
-	}
-	return fmt.Sprintf("%p-%p", e.S, e.T)
+	hashS := hash(reflect.ValueOf(e.S))
+	hashT := hash(reflect.ValueOf(e.T))
+
+	return fmt.Sprintf("%x-%x", hashS, hashT)
 }
 
 func (e *basicEdge) Source() Vertex {
