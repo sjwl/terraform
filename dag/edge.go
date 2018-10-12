@@ -29,18 +29,19 @@ type basicEdge struct {
 
 func (e *basicEdge) Hashcode() interface{} {
 
+	var rvs, rvt reflect.Value
 	rvS := reflect.ValueOf(e.S)
 	if rvS.Kind() == reflect.Ptr {
-		rvS = rvS.Elem()
+		rvs = rvS.Elem()
 	}
 	rvT := reflect.ValueOf(e.T)
 	if rvT.Kind() == reflect.Ptr {
-		rvT = rvT.Elem()
+		rvt = rvT.Elem()
 	}
-	switch rvS.Kind() {
+	switch rvs.Kind() {
 	case reflect.Struct:
-		s := rvS.Interface()
-		t := rvS.Interface()
+		s := rvs.Interface()
+		t := rvt.Interface()
 		hashS, _ := hashstructure.Hash(s, nil)
 		hashT, _ := hashstructure.Hash(t, nil)
 		return fmt.Sprintf("%x-%x", hashS, hashT)
