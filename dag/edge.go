@@ -39,8 +39,10 @@ func (e *basicEdge) Hashcode() interface{} {
 	}
 	switch rvS.Kind() {
 	case reflect.Struct:
-		hashS, _ := hashstructure.Hash(rvS, nil)
-		hashT, _ := hashstructure.Hash(rvT, nil)
+		s := rvS.Interface()
+		t := rvS.Interface()
+		hashS, _ := hashstructure.Hash(s, nil)
+		hashT, _ := hashstructure.Hash(t, nil)
 		return fmt.Sprintf("%x-%x", hashS, hashT)
 	}
 	return fmt.Sprintf("%p-%p", e.S, e.T)
