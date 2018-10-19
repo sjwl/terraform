@@ -31,10 +31,7 @@ func hash(rv reflect.Value) (hash uint64) {
 	if rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()
 	}
-	switch rv.Kind() {
-	case reflect.Struct:
-		hash, _ = hashstructure.Hash(rv.Interface(), nil)
-	}
+	hash, _ = hashstructure.Hash(rv.Interface(), nil)
 	return hash
 }
 func (e *basicEdge) Hashcode() interface{} {
