@@ -3,6 +3,7 @@ package terraform
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/hashicorp/terraform/config"
 )
@@ -90,7 +91,27 @@ func (n *EvalWriteOutput) Eval(ctx EvalContext) (interface{}, error) {
 			valueRaw = ""
 		}
 		if cfg.IsComputed("value") {
-			valueRaw = config.UnknownVariableValue
+			// replace computed with fully qualified variable name
+			if len(mod.Path) > 1 {
+				switch valueRaw.(type) {
+				case string:
+					valueRaw = fmt.Sprintf("${module.%s.%s", strings.Join(mod.Path[1:], "."), valueRaw.(string)[2:])
+				case []interface{}:
+					for i, v := range valueRaw.([]interface{}) {
+						valueRaw.([]interface{})[i] = fmt.Sprintf("${module.%s.%s", strings.Join(mod.Path[1:], "."), v.(string)[2:])
+					}
+				case map[string]interface{}:
+					for k, v := range valueRaw.(map[string]interface{}) {
+						valueRaw.(map[string]interface{})[k] = fmt.Sprintf("${module.%s.%s", strings.Join(mod.Path[1:], "."), v.(string)[2:])
+					}
+				case []map[string]interface{}:
+					for i, v := range valueRaw.([]map[string]interface{}) {
+						for k, _v := range v {
+							valueRaw.([]map[string]interface{})[i][k] = fmt.Sprintf("${module.%s.%s", strings.Join(mod.Path[1:], "."), _v.(string)[2:])
+						}
+					}
+				}
+			}
 		}
 	}
 
