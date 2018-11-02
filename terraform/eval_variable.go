@@ -141,7 +141,11 @@ func (n *EvalVariableBlock) Eval(ctx EvalContext) (interface{}, error) {
 		default:
 			var vString string
 			if err := hilmapstructure.WeakDecode(v, &vString); err == nil {
-				n.VariableValues[k] = vString
+				if rc.IsComputed(k) {
+					n.VariableValues[k] = rc.Raw[k]
+				} else {
+					n.VariableValues[k] = vString
+				}
 				continue
 			}
 		}
