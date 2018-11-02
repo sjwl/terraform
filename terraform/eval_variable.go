@@ -152,15 +152,15 @@ func (n *EvalVariableBlock) Eval(ctx EvalContext) (interface{}, error) {
 
 		return nil, fmt.Errorf("Variable value for %s is not a string, list or map type", k)
 	}
-
-	for _, path := range rc.ComputedKeys {
-		log.Printf("[DEBUG] Setting Unknown Variable Value for computed key: %s", path)
-		err := n.setUnknownVariableValueForPath(path)
-		if err != nil {
-			return nil, err
+	/*
+		for _, path := range rc.ComputedKeys {
+			log.Printf("[DEBUG] Setting Unknown Variable Value for computed key: %s", path)
+			err := n.setUnknownVariableValueForPath(path)
+			if err != nil {
+				return nil, err
+			}
 		}
-	}
-
+	*/
 	return nil, nil
 }
 
